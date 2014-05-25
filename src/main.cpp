@@ -1,7 +1,3 @@
-/****************************************************************************
- *  Author: Aetf   <7437103@gmail.com> 2012-3                               *
- ****************************************************************************/
-
 #include <iostream>
 #include <cmath>
 #include <string>
@@ -41,11 +37,11 @@ int main(int argc,char* argv[])
 {
     if (argc!=2)
     {
-        cout<<"Parameter invalid!"<<endl<<"Usage:"<<endl<<argv[0]<<" [WFF]"<<endl;
+        cout<<"Parameter invalid!"<<endl<<"Usage:"<<endl<<argv[0]<<" '[WFF]'"<<endl;
         return -1;
     }
     string exp(argv[1]);
-//    string exp("(P->Q)<->!(!P||Q)&&(Q||(P&&Q))");
+//    string exp("P||Q");
     exp+='#';  // Get the WFF from the console. And add a # to mark the end.
     vector<string> props;
     size_t propNum=0;
@@ -55,7 +51,7 @@ int main(int argc,char* argv[])
     int *result;
     result=new int[maxResult]; // save the result of WFF.
     bitset<maxProp> pi;
-    pi.reset(); // pi saves the T/F for the propositions, all of them are F first.
+    pi.set(); // pi saves the T/F for the propositions, all of them are F first.
 
     // Now let's begin!
     // Check if the WFF is valid, and calculate.
@@ -78,8 +74,8 @@ int main(int argc,char* argv[])
     cout<<"The expression is valid. Lay out the truth table:"<<endl;
     for (vector<string>::iterator i=props.begin();i!=props.end();++i)
         cout<<*i<<"  ";
-    cout<<"Result"<<endl;
-    pi.reset();
+    cout<<exp.substr(0,exp.size()-1)<<endl;
+    pi.set();
     for (int i=0;i!=maxResult;++i)
     {
         for (unsigned int j=0;j!=propNum;++j)
@@ -88,12 +84,14 @@ int main(int argc,char* argv[])
         nextProp(pi);
     }
     // Lay out the main DNF and CNF.
-    pi.reset();
+    pi.set();
     string dnf="",cnf="";
+    int truthNum=0;
     for(int i=0;i!=maxResult;++i)
     {
         if (result[i])
         {
+            ++truthNum;
             dnf+="(";
             for(unsigned int j=0;j!=propNum;++j)
             {
@@ -119,6 +117,10 @@ int main(int argc,char* argv[])
         }
         nextProp(pi);
     }
+    if(truthNum==1)  // Remove the brackets if there's only one term.
+        dnf=dnf.substr(1,dnf.size()-2);
+    if(maxResult-truthNum==1)
+        cnf=cnf.substr(1,cnf.size()-2);
     dnf.erase(dnf.size()-2,2); // Cut the last two char in DNF and CNF.
     cnf.erase(cnf.size()-2,2); // Cut the last two char in DNF and CNF.
     cout<<"The main DNF is:"<<endl<<dnf<<endl;
@@ -289,9 +291,9 @@ string performP(string exp,const vector<string>& props,const bitset<maxProp> pi)
     return exp;
 }
 
-bitset<maxProp>& nextProp(bitset<maxProp>& p) // This traverses all the assignments. 
-{                                             //I did not use loop to do this for the number of propositions is unknown.
-    bitset<maxProp> t(p.to_ulong()+1);
+bitset<maxProp>& nextProp(bitset<maxProp>& p) // This traverses all the assignments. I did not use loop to do this for the number of propositions is unknown.
+{
+    bitset<maxProp> t(p.to_ulong()-1);
     p=t;
     return p;
 }
