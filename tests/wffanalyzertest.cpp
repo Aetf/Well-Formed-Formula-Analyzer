@@ -91,13 +91,15 @@ namespace {
         props.push_back("P");
         props.push_back("Q");
         props.push_back("R");
-        
-        ASSERT_EQ(props.size(), countProp(expr, res)) << "countProp returns wrong number of propositions";
+
+        auto assignCount = countProp(expr, res);
         
         for(unsigned i = 0; i!= props.size(); i++)
         {
             EXPECT_EQ(props[i], res[i]) << "Vectors props and res differ at index " << i;
         }
+
+        ASSERT_EQ(8u, assignCount) << "countProp returns wrong number of assignments";
     }
     
     // Tests that string replace performs correct.
@@ -131,7 +133,7 @@ namespace {
         
         ASSERT_EQ(nxt, pi);
     }
-    
+
 }  // namespace
 
 int main(int argc, char **argv) {

@@ -152,9 +152,12 @@ uint countProp(string exp,vector<string>& props) // Count propositions and save 
         sort(props.begin(),props.end());
     vector<string>::iterator unq=unique(props.begin(),props.end()); // Exclude duplicate elements.
     props.erase(unq,props.end());
+
+    // Reduce the memory usage.
     vector<string> temp(props);
-    temp.swap(props); // Reduce the memory usage.
-    return props.size();
+    temp.swap(props);
+
+    return 2 << (props.size()-1);
 }
 
 void stringReplace(string &strBase, const string &strSrc, const string &strDes) // As the name shows.

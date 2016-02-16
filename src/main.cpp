@@ -20,13 +20,9 @@ int main(int argc,char* argv[])
 
     // props saves the propositions which will be used below.
     vector<string> props;
-    uint propNum=0;
 
-    // count different proposition variables
-    propNum = countProp(exp,props);
-
-    // There are pow(2,propNum) kinds of different assignment to variables.
-    uint maxResult = 2 << (propNum-1);
+    // find all proposition variables
+    uint maxResult = countProp(exp, props);
 
     // save the result of WFF.
     int *result = new int[maxResult];
@@ -63,7 +59,7 @@ int main(int argc,char* argv[])
     pi.set();
     for (uint i=0;i!=maxResult;++i)
     {
-        for (uint j=0;j!=propNum;++j)
+        for (uint j=0;j!=props.size();++j)
             cout<<(pi[j]?'T':'F')<<"  ";
         cout<<(result[i]?'T':'F')<<endl;
         nextProp(pi);

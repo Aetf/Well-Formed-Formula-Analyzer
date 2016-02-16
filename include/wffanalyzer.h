@@ -43,7 +43,8 @@ vector<string> strSplit(string _src);
 bool stackBasedCal(string exp);
 
 /**
- * Count the proposition number in a given expression
+ * Count the proposition number in a given expression,
+ * returns assignment count.
  */
 uint countProp(string exp,vector<string>& props);
 
