@@ -9,7 +9,7 @@ using namespace std;
 
 // Now comes the core part of the algorithm!
 //-1:calculate 1:push 0:pop(for brackets) -2:error
-int OPERATOR_WEIGHT[][8]={ {1,1,1,1,1,1,-1,1},
+static int OPERATOR_WEIGHT[][8]={ {1,1,1,1,1,1,-1,1},
                             {-1,-1,-2,1,1,1,-1,1},
                             {-1,-2,-1,1,1,1,-1,1},
                             {-1,-1,-1,-2,-2,1,-1,1},
@@ -134,7 +134,6 @@ bool stackBasedCal(string exp)
                     break;
                 case -2: //There is something wrong!
                     throw INVALID_EXP;
-                    break;
                 default:
                     break;
             }
@@ -147,7 +146,7 @@ bool stackBasedCal(string exp)
     return temp=="T"; // Transform string to bool.
 }
 
-int countProp(string exp,vector<string>& props) // Count propositions and save a copy to prop
+uint countProp(string exp,vector<string>& props) // Count propositions and save a copy to prop
 {
     for(string::iterator i=exp.begin();i!=exp.end();++i)
         if (isalpha(*i))
@@ -173,16 +172,16 @@ void stringReplace(string &strBase, const string &strSrc, const string &strDes) 
     }
 }
 
-string performP(string exp,const vector<string>& props,const bitset<maxProp> pi)
+string performP(string exp,const vector<string>& props,const bitset<MAX_PROP_VARIABLE> &pi)
 {
     for(unsigned int i=0;i!=props.size();++i)
         stringReplace(exp,props.at(i),(pi[i]?"T":"F"));
     return exp;
 }
 
-bitset<maxProp>& nextProp(bitset<maxProp>& p) // This traverses all the assignments. I did not use loop to do this for the number of propositions is unknown.
+bitset<MAX_PROP_VARIABLE>& nextProp(bitset<MAX_PROP_VARIABLE>& p) // This traverses all the assignments. I did not use loop to do this for the number of propositions is unknown.
 {
-    bitset<maxProp> t(p.to_ulong()-1);
+    bitset<MAX_PROP_VARIABLE> t(p.to_ulong()-1);
     p=t;
     return p;
 }

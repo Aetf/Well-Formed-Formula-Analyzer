@@ -92,7 +92,7 @@ namespace {
         props.push_back("Q");
         props.push_back("R");
         
-        ASSERT_EQ(props.size(), (unsigned)countProp(expr, res)) << "countProp returns wrong number of propositions";
+        ASSERT_EQ(props.size(), countProp(expr, res)) << "countProp returns wrong number of propositions";
         
         for(unsigned i = 0; i!= props.size(); i++)
         {
@@ -116,7 +116,7 @@ namespace {
         props.push_back("P");
         props.push_back("Q");
         props.push_back("R");
-        bitset<maxProp> pi;
+        bitset<MAX_PROP_VARIABLE> pi;
         pi.set(0, false).set(1).set(2);
 
         ASSERT_EQ("((F||T)&&T)->F", performP(expr, props, pi));
@@ -124,7 +124,7 @@ namespace {
     
     // Tests that operator to index conversion correct.
     TEST_F(WFFAnalyzerTest, NextProps) {
-        bitset<maxProp> pi, nxt;
+        bitset<MAX_PROP_VARIABLE> pi, nxt;
         pi.set(0, false).set(1).set(2);
         nxt.set(0).set(1, false).set(2);
         nextProp(pi);

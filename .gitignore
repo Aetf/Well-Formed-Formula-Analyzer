@@ -1,5 +1,6 @@
 .kdev4/*
 *.kdev4
 .kdev*
+*.user
 
 build/*
