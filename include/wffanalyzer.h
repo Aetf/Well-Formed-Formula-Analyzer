@@ -4,12 +4,28 @@
 #include <string>
 #include <vector>
 #include <bitset>
+#include <utility>
+#include <sstream>
 using std::string;
 using std::vector;
 using std::bitset;
+using std::pair;
+using std::ostringstream;
 
 const int MAX_PROP_VARIABLE=32; // No more than 10 propositions can be calculated.
 const int INVALID_EXP=-1;
+
+template <typename T>
+string join(const T& v, const string& delim) {
+    std::ostringstream s;
+    for (const auto& i : v) {
+        if (&i != &v[0]) {
+            s << delim;
+        }
+        s << i;
+    }
+    return s.str();
+}
 
 /**
  * Convert a operator string to its index
@@ -62,5 +78,22 @@ string performP(string exp,const vector<string>& props,const bitset<MAX_PROP_VAR
  * Generate next bitset
  */
 bitset<MAX_PROP_VARIABLE>& nextProp(bitset<MAX_PROP_VARIABLE>& p);
+
+/**
+ * @brief Analyze the expression expr, compute it for all possible assignment of variables in expr.
+ * @param expr the expression to compute
+ * @param props extracted propositional variable list
+ * @param results computed results
+ * @return if the expression is valid
+ */
+bool analyzeExpression(const string &expr, vector<string> &props, vector<bool> &results);
+
+/**
+ * @brief generate CNF and DNF from results
+ * @param props all propositional variables
+ * @param results results got from analyzeExpression
+ * @return a pair of string (DNF, CNF)
+ */
+pair<string, string> computeNF(const vector<string> &props, const vector<bool> &results);
 
 #endif // WFFANALYZER_H

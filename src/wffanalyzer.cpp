@@ -186,3 +186,66 @@ bitset<MAX_PROP_VARIABLE>& nextProp(bitset<MAX_PROP_VARIABLE>& p) // This traver
     p=t;
     return p;
 }
+
+bool analyzeExpression(const string &expr, vector<string> &props, vector<bool> &results)
+{
+    // find all proposition variables
+    uint maxResult = countProp(expr, props);
+
+    // save the result of WFF.
+    results.clear();
+    results.reserve(maxResult);
+
+    // check and calculate.
+    bitset<MAX_PROP_VARIABLE> pi;
+    try {
+        // loop through all possible assignments, begin from all false.
+        pi.set();
+        for(uint i=0;i!=maxResult;++i) {
+            // add a # to mark the end as required by stackBasedCal
+            results.push_back(stackBasedCal(performP(expr,props,pi) + "#"));
+            nextProp(pi);
+        }
+    } catch (int) {
+        return false;
+    }
+
+    return true;
+}
+
+pair<string, string> computeNF(const vector<string> &props, const vector<bool> &results)
+{
+    bitset<MAX_PROP_VARIABLE> pi;
+    pi.set();
+    string dnf="",cnf="";
+    vector<string> dnfv, cnfv, term;
+    term.reserve(props.size());
+    for (const auto &res : results) {
+        term.clear();
+        if (res) {
+            for (uint i = 0; i!= props.size(); i++) {
+                term.push_back(pi[i] ?
+                                   props[i]
+                                   : "!" + props[i]);
+            }
+            dnfv.push_back("(" + join(term, "&&") + ")");
+        } else {
+            for (uint i = 0; i!= props.size(); i++) {
+                term.push_back(!pi[i] ?
+                                   props[i]
+                                   : "!" + props[i]);
+            }
+            cnfv.push_back("(" + join(term, "||") + ")");
+        }
+        nextProp(pi);
+    }
+    dnf = join(dnfv, "||");
+    cnf = join(cnfv, "&&");
+    // Remove the brackets if there's only one term.
+    if(dnfv.size() == 1)
+        dnf=dnf.substr(1,dnf.size()-2);
+    if(cnfv.size() == 1)
+        cnf=cnf.substr(1,cnf.size()-2);
+
+    return {dnf, cnf};
+}

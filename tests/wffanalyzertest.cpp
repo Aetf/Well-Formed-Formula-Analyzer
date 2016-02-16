@@ -134,6 +134,26 @@ namespace {
         ASSERT_EQ(nxt, pi);
     }
 
+    TEST_F(WFFAnalyzerTest, EmptyDNF) {
+        vector<string> props({"P", "Q", "R"});
+        vector<bool> res({false, false, false, false,
+                          false, false, false, false});
+
+        string dnf, cnf;
+        tie(dnf, cnf) = computeNF(props, res);
+        ASSERT_EQ("", dnf);
+        ASSERT_EQ("(!P||!Q||!R)&&(P||!Q||!R)&&(!P||Q||!R)&&(P||Q||!R)&&(!P||!Q||R)&&(P||!Q||R)&&(!P||Q||R)&&(P||Q||R)", cnf);
+    }
+
+    TEST_F(WFFAnalyzerTest, EmptyCNF) {
+        vector<string> props({"P", "Q"});
+        vector<bool> res({true, true, true, true});
+
+        string dnf, cnf;
+        tie(dnf, cnf) = computeNF(props, res);
+        ASSERT_EQ("(P&&Q)||(!P&&Q)||(P&&!Q)||(!P&&!Q)", dnf);
+        ASSERT_EQ("", cnf);
+    }
 }  // namespace
 
 int main(int argc, char **argv) {
