@@ -26,7 +26,7 @@ int main(int argc,char* argv[])
     propNum = countProp(exp,props);
 
     // There are pow(2,propNum) kinds of different assignment to variables.
-    uint maxResult = 2 << propNum;
+    uint maxResult = 2 << (propNum-1);
 
     // save the result of WFF.
     int *result = new int[maxResult];
