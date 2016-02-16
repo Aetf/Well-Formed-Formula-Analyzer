@@ -1,7 +1,5 @@
 #include "wffanalyzer.h"
 #include <iostream>
-#include <cmath>
-#include <cctype>
 #include <bitset>
 #include <stack>
 #include <algorithm>

@@ -1,8 +1,5 @@
 #include <iostream>
-#include <cmath>
-#include <cctype>
 #include <bitset>
-#include <stack>
 #include <algorithm>
 
 #include "wffanalyzer.h"
@@ -13,7 +10,7 @@ int main(int argc,char* argv[])
 {
     if (argc!=2)
     {
-        cout<<"Parameter invalid!"<<endl<<"Usage:"<<endl<<argv[0]<<" '[WFF]'"<<endl;
+        cout<<"Invalid arguments!"<<endl<<"Usage:"<<endl<<argv[0]<<" '[WFF]'"<<endl;
         return -1;
     }
 
@@ -29,8 +26,7 @@ int main(int argc,char* argv[])
     propNum = countProp(exp,props);
 
     // There are pow(2,propNum) kinds of different assignment to variables.
-    //int maxResult = 2 << propNum;
-    uint maxResult = static_cast<uint>(pow(2,propNum));
+    uint maxResult = 2 << propNum;
 
     // save the result of WFF.
     int *result = new int[maxResult];
@@ -77,14 +73,11 @@ int main(int argc,char* argv[])
     pi.set();
     string dnf="",cnf="";
     uint truthNum=0;
-    for(uint i=0;i!=maxResult;++i)
-    {
-        if (result[i])
-        {
+    for(uint i=0;i!=maxResult;++i) {
+        if (result[i]) {
             ++truthNum;
             dnf+="(";
-            for(uint j=0;j!=propNum;++j)
-            {
+            for(uint j=0;j!=propNum;++j) {
                 if (!pi[j])
                     dnf+="!";
                 dnf+=props.at(j);
@@ -92,11 +85,9 @@ int main(int argc,char* argv[])
             }
             dnf.erase(dnf.size()-2,2); // Cut the last two char in DNF and CNF.
             dnf+=")||";
-        }else
-        {
+        } else {
             cnf+="(";
-            for(uint j=0;j!=propNum;++j)
-            {
+            for(uint j=0;j!=propNum;++j) {
                 if (pi[j])
                     cnf+="!";
                 cnf+=props.at(j);
