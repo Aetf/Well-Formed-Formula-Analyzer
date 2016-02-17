@@ -25,10 +25,10 @@ Pass in the propositional statement as command line argument. The program will a
 | propositional variable | One letter, e.g. P, Q, x, y |
 | logical NOT | !P |
 | logical AND | P&&Q |
-| logical OR  | P||Q |
+| logical OR  | P\|\|Q |
 | logical implication | P->Q |
 | logical bi-implication | P<->Q |
-| parenthesis | (P||Q) |
+| parenthesis | (P\|\|Q)&&R |
 
 ###### Note
 - No space is allowed in the statements
