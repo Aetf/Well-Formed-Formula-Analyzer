@@ -54,7 +54,7 @@ vector<string> tokenize(const string &src);
  * Do calculation on the exp.
  * return the result
  */
-bool stackBasedCal(const vector<string> &exp);
+bool stackBasedCal(vector<string> exp);
 
 /**
  * Count the proposition number in a given expression,

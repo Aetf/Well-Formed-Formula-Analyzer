@@ -74,10 +74,9 @@ vector<string> tokenize(const string &src)
     return tokens;
 }
 
-bool stackBasedCal(const vector<string> &exp)
+bool stackBasedCal(vector<string> tokens)
 {
     // add a # to mark the end as required by stackBasedCal
-    auto tokens = exp;
     tokens.push_back("#");
 
     // Create operator stack and variable stack.
@@ -85,8 +84,7 @@ bool stackBasedCal(const vector<string> &exp)
     optr.push("#");
 
     auto expIter = tokens.begin();
-    while (expIter != tokens.end()
-           && (*expIter != "#" || optr.top() != "#")) {
+    while (*expIter != "#" || optr.top() != "#") {
         int curOperIndex = operToIndex(*expIter);
         if (curOperIndex == -1) {
             // It is a variable
