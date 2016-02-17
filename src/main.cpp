@@ -28,7 +28,7 @@ int main(int argc,char* argv[])
     // The WFF has been checked, and all the result has been save to result array.
     // Print table header.
     cout << "The expression is valid. Print the truth table:" << endl;
-    cout << join(props, "  ") << exp << endl;
+    cout << join(props, "  ") << "  " << exp << endl;
     // Print truth table
     for (uint conf = 0; conf!= result.size(); conf++) {
         for (uint i = 0; i!= props.size(); i++)
