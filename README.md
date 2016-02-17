@@ -64,3 +64,6 @@ I wrote this to practice what I have learned in my Discrete Mathematics course d
 On the other hand, of course, I've gained much more understanding over the years about the whole algorithm and the language therefore I'm able to improve it now. Thus a major rewrite. There are also many fixes for bugs I found when using this little program to do my AI homework.
 
 I'm not sure where this project will go. But it did witness my growth as a programmer. And I'm looking forward to see what this will look like when I return to it some years later.
+
+### License
+See [LICENSE.md](LICENSE.md). You will find it a really interesting one. XD
