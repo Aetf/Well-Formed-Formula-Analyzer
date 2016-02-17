@@ -66,4 +66,4 @@ On the other hand, of course, I've gained much more understanding over the years
 I'm not sure where this project will go. But it did witness my growth as a programmer. And I'm looking forward to see what this will look like when I return to it some years later.
 
 ### License
-See [LICENSE.md](LICENSE.md). You will find it a really interesting one. XD
+See [LICENSE](LICENSE). You will find it a really interesting one. XD
