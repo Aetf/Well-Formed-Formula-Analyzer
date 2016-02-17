@@ -1,5 +1,4 @@
 #include <iostream>
-#include <bitset>
 #include <algorithm>
 #include <sstream>
 #include <tuple>
@@ -33,13 +32,10 @@ int main(int argc,char* argv[])
         cout<<*i<<"  ";
     cout<<exp.substr(0,exp.size()-1)<<endl;
     // Print truth table
-    bitset<MAX_PROP_VARIABLE> pi;
-    pi.set();
-    for (uint i=0; i!= result.size(); i++) {
-        for (uint j=0;j!=props.size();++j)
-            cout<<(pi[j]?'T':'F')<<"  ";
-        cout<<(result[i]?'T':'F')<<endl;
-        nextProp(pi);
+    for (uint conf = 0; conf!= result.size(); conf++) {
+        for (uint i = 0; i!= props.size(); i++)
+            cout << (assignmentAt(conf, i) ? 'T' : 'F') << "  ";
+        cout << (result[conf] ? 'T' : 'F') << endl;
     }
 
     // Print DNF and CNF.

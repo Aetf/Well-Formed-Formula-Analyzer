@@ -1,5 +1,7 @@
 #include "wffanalyzer.h"
 #include "gtest/gtest.h"
+#include <bitset>
+using std::bitset;
 
 namespace {
     
@@ -113,27 +115,12 @@ namespace {
     
     // Tests that substitution propositions works correct.
     TEST_F(WFFAnalyzerTest, PerformProp) {
-        const string expr = "((P||Q)&&R)->P";
-        vector<string> props;
-        props.push_back("P");
-        props.push_back("Q");
-        props.push_back("R");
-        bitset<MAX_PROP_VARIABLE> pi;
-        pi.set(0, false).set(1).set(2);
-
-        ASSERT_EQ("((F||T)&&T)->F", performP(expr, props, pi));
+        ASSERT_EQ("((F||T)&&T)->F",
+                  performP("((P||Q)&&R)->P",
+                           {"P", "Q", "R"},
+                           0b110));
     }
     
-    // Tests that operator to index conversion correct.
-    TEST_F(WFFAnalyzerTest, NextProps) {
-        bitset<MAX_PROP_VARIABLE> pi, nxt;
-        pi.set(0, false).set(1).set(2);
-        nxt.set(0).set(1, false).set(2);
-        nextProp(pi);
-        
-        ASSERT_EQ(nxt, pi);
-    }
-
     TEST_F(WFFAnalyzerTest, EmptyDNF) {
         vector<string> props({"P", "Q", "R"});
         vector<bool> res({false, false, false, false,
@@ -142,7 +129,8 @@ namespace {
         string dnf, cnf;
         tie(dnf, cnf) = computeNF(props, res);
         ASSERT_EQ("", dnf);
-        ASSERT_EQ("(!P||!Q||!R)&&(P||!Q||!R)&&(!P||Q||!R)&&(P||Q||!R)&&(!P||!Q||R)&&(P||!Q||R)&&(!P||Q||R)&&(P||Q||R)", cnf);
+        ASSERT_EQ("(P||Q||R)&&(!P||Q||R)&&(P||!Q||R)&&(!P||!Q||R)&&(P||Q||!R)&&(!P||Q||!R)&&(P||!Q||!R)&&(!P||!Q||!R)",
+                  cnf);
     }
 
     TEST_F(WFFAnalyzerTest, EmptyCNF) {
@@ -151,8 +139,22 @@ namespace {
 
         string dnf, cnf;
         tie(dnf, cnf) = computeNF(props, res);
-        ASSERT_EQ("(P&&Q)||(!P&&Q)||(P&&!Q)||(!P&&!Q)", dnf);
+        ASSERT_EQ("(!P&&!Q)||(P&&!Q)||(!P&&Q)||(P&&Q)", dnf);
         ASSERT_EQ("", cnf);
+    }
+
+    TEST_F(WFFAnalyzerTest, AssignmentForWork) {
+        bitset<MAX_PROP_VARIABLE> pi;
+        pi.reset();
+        uint max_prop = 20;
+        for (uint64_t i = 0; i!= 2ul << (max_prop-1); i++) {
+            for (uint j = 0; j!= max_prop; j++) {
+                EXPECT_EQ(pi[j], assignmentAt(i, j))
+                        << "Wrong assignment for variable " << j
+                        << " at assignment No. " << i;
+            }
+            pi = bitset<MAX_PROP_VARIABLE>(pi.to_ullong() + 1);
+        }
     }
 }  // namespace
 

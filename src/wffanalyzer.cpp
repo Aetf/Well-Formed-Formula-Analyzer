@@ -1,6 +1,5 @@
 #include "wffanalyzer.h"
 #include <iostream>
-#include <bitset>
 #include <stack>
 #include <algorithm>
 using namespace std;
@@ -144,20 +143,23 @@ bool stackBasedCal(string exp)
     return temp=="T"; // Transform string to bool.
 }
 
-uint countProp(string exp,vector<string>& props) // Count propositions and save a copy to prop
+// find all propositions and return maximum configuration number
+uint64_t countProp(string exp,vector<string>& props)
 {
     for(string::iterator i=exp.begin();i!=exp.end();++i)
         if (isalpha(*i))
             props.push_back(exp.substr(i-exp.begin(),1));
         sort(props.begin(),props.end());
-    vector<string>::iterator unq=unique(props.begin(),props.end()); // Exclude duplicate elements.
-    props.erase(unq,props.end());
+
+    // Exclude duplicate elements.
+    vector<string>::iterator unq = unique(props.begin(), props.end());
+    props.erase(unq, props.end());
 
     // Reduce the memory usage.
     vector<string> temp(props);
     temp.swap(props);
 
-    return 2 << (props.size()-1);
+    return 2ul << (props.size()-1);
 }
 
 void stringReplace(string &strBase, const string &strSrc, const string &strDes) // As the name shows.
@@ -173,38 +175,34 @@ void stringReplace(string &strBase, const string &strSrc, const string &strDes) 
     }
 }
 
-string performP(string exp,const vector<string>& props,const bitset<MAX_PROP_VARIABLE> &pi)
+string performP(string exp, const vector<string>& props, uint64_t configuration)
 {
-    for(unsigned int i=0;i!=props.size();++i)
-        stringReplace(exp,props.at(i),(pi[i]?"T":"F"));
+    for(uint i = 0; i!= props.size(); i++)
+        stringReplace(exp, props.at(i),
+                      assignmentAt(configuration, i) ? "T" : "F");
     return exp;
 }
 
-bitset<MAX_PROP_VARIABLE>& nextProp(bitset<MAX_PROP_VARIABLE>& p) // This traverses all the assignments. I did not use loop to do this for the number of propositions is unknown.
+bool assignmentAt(uint64_t configuration, uint varPosition)
 {
-    bitset<MAX_PROP_VARIABLE> t(p.to_ulong()-1);
-    p=t;
-    return p;
+    return (configuration & (1 << varPosition));
 }
 
 bool analyzeExpression(const string &expr, vector<string> &props, vector<bool> &results)
 {
     // find all proposition variables
-    uint maxResult = countProp(expr, props);
+    uint64_t maxResult = countProp(expr, props);
 
     // save the result of WFF.
     results.clear();
     results.reserve(maxResult);
 
     // check and calculate.
-    bitset<MAX_PROP_VARIABLE> pi;
     try {
-        // loop through all possible assignments, begin from all false.
-        pi.set();
-        for(uint i=0;i!=maxResult;++i) {
+        // loop through all possible configurations
+        for(uint64_t conf = 0; conf!= maxResult; conf++) {
             // add a # to mark the end as required by stackBasedCal
-            results.push_back(stackBasedCal(performP(expr,props,pi) + "#"));
-            nextProp(pi);
+            results.push_back(stackBasedCal(performP(expr, props, conf) + "#"));
         }
     } catch (int) {
         return false;
@@ -215,37 +213,34 @@ bool analyzeExpression(const string &expr, vector<string> &props, vector<bool> &
 
 pair<string, string> computeNF(const vector<string> &props, const vector<bool> &results)
 {
-    bitset<MAX_PROP_VARIABLE> pi;
-    pi.set();
     string dnf="",cnf="";
     vector<string> dnfv, cnfv, term;
     term.reserve(props.size());
-    for (const auto &res : results) {
+    for (uint64_t conf = 0; conf!= results.size(); conf++) {
         term.clear();
-        if (res) {
+        if (results[conf]) {
             for (uint i = 0; i!= props.size(); i++) {
-                term.push_back(pi[i] ?
+                term.push_back(assignmentAt(conf, i) ?
                                    props[i]
                                    : "!" + props[i]);
             }
             dnfv.push_back("(" + join(term, "&&") + ")");
         } else {
             for (uint i = 0; i!= props.size(); i++) {
-                term.push_back(!pi[i] ?
+                term.push_back(!assignmentAt(conf, i) ?
                                    props[i]
                                    : "!" + props[i]);
             }
             cnfv.push_back("(" + join(term, "||") + ")");
         }
-        nextProp(pi);
     }
     dnf = join(dnfv, "||");
     cnf = join(cnfv, "&&");
     // Remove the brackets if there's only one term.
     if(dnfv.size() == 1)
-        dnf=dnf.substr(1,dnf.size()-2);
+        dnf = dnf.substr(1,dnf.size()-2);
     if(cnfv.size() == 1)
-        cnf=cnf.substr(1,cnf.size()-2);
+        cnf = cnf.substr(1,cnf.size()-2);
 
     return {dnf, cnf};
 }

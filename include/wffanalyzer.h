@@ -3,12 +3,10 @@
 
 #include <string>
 #include <vector>
-#include <bitset>
 #include <utility>
 #include <sstream>
 using std::string;
 using std::vector;
-using std::bitset;
 using std::pair;
 using std::ostringstream;
 
@@ -60,9 +58,9 @@ bool stackBasedCal(string exp);
 
 /**
  * Count the proposition number in a given expression,
- * returns assignment count.
+ * returns maximum configuration number.
  */
-uint countProp(string exp,vector<string>& props);
+uint64_t countProp(string exp,vector<string>& props);
 
 /**
  * Replace a part of string
@@ -72,12 +70,15 @@ void stringReplace(string &strBase, const string &strSrc, const string &strDes);
 /**
  * Substitude the propositions according to pi.
  */
-string performP(string exp,const vector<string>& props,const bitset<MAX_PROP_VARIABLE> &pi);
+string performP(string exp, const vector<string>& props, uint64_t configuration);
 
 /**
- * Generate next bitset
+ * @brief assignment for variable at position, in configuration
+ * @param configuration
+ * @param varPosition
+ * @return the assignment
  */
-bitset<MAX_PROP_VARIABLE>& nextProp(bitset<MAX_PROP_VARIABLE>& p);
+bool assignmentAt(uint64_t configuration, uint varPosition);
 
 /**
  * @brief Analyze the expression expr, compute it for all possible assignment of variables in expr.
