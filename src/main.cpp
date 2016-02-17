@@ -10,7 +10,7 @@ using namespace std;
 
 int main(int argc,char* argv[])
 {
-    if (argc!=2)
+    if (argc != 2)
     {
         cout<<"Invalid arguments!"<<endl<<"Usage:"<<endl<<argv[0]<<" '[WFF]'"<<endl;
         return -1;
@@ -23,14 +23,12 @@ int main(int argc,char* argv[])
     vector<string> props;
     vector<bool> result;
     if (!analyzeExpression(exp, props, result))
-        cout<<"Invalid expression!"<<endl;
+        cout << "Invalid expression!" << endl;
 
     // The WFF has been checked, and all the result has been save to result array.
     // Print table header.
-    cout<<"The expression is valid. Print the truth table:"<<endl;
-    for (auto i=props.begin();i!=props.end();++i)
-        cout<<*i<<"  ";
-    cout<<exp.substr(0,exp.size()-1)<<endl;
+    cout << "The expression is valid. Print the truth table:" << endl;
+    cout << join(props, "  ") << exp << endl;
     // Print truth table
     for (uint conf = 0; conf!= result.size(); conf++) {
         for (uint i = 0; i!= props.size(); i++)
@@ -41,7 +39,7 @@ int main(int argc,char* argv[])
     // Print DNF and CNF.
     string dnf, cnf;
     tie(dnf, cnf) = computeNF(props, result);
-    cout<<"The main DNF is:"<<endl<<dnf<<endl;
-    cout<<"The main CNF is:"<<endl<<cnf<<endl;
+    cout << "The main DNF is:" << endl << dnf << endl;
+    cout << "The main CNF is:" << endl << cnf << endl;
     return 0;
 }

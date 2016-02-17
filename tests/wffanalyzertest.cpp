@@ -64,19 +64,17 @@ namespace {
         ASSERT_EQ("F", cal(para)) << "failed on !" << para;
     }
     
-    // Tests that split expression works.
-    TEST_F(WFFAnalyzerTest, ExprSplit) {
-        const string expr = "P||Q";
-        vector<string> tokens;
-        tokens.push_back("P");
-        tokens.push_back("||");
-        tokens.push_back("Q");
-        vector<string> res = strSplit(expr);
-        ASSERT_EQ(tokens.size(), res.size()) << "strSplit returns wrong number of tokens";
-        
-        for(unsigned i = 0; i!= tokens.size(); i++)
+    // Tests that expression tokenization works.
+    TEST_F(WFFAnalyzerTest, ExprTokenization) {
+        vector<string> tokens{"P", "||", "Q"};
+        auto res = tokenize("P||Q");
+
+        ASSERT_EQ(tokens.size(), res.size())
+                << "strSplit returns wrong number of tokens";
+        for(uint i = 0; i!= tokens.size(); i++)
         {
-            EXPECT_EQ(tokens[i], res[i]) << "Vectors tokens and res differ at index " << i;
+            EXPECT_EQ(tokens[i], res[i])
+                    << "Vectors tokens and res differ at index " << i;
         }
     }
     
@@ -89,14 +87,12 @@ namespace {
     // Tests that propositions in expr can be count correct.
     TEST_F(WFFAnalyzerTest, CountPropInExpr) {
         const string expr = "((P||Q)&&R)->P";
-        vector<string> props, res;
-        props.push_back("P");
-        props.push_back("Q");
-        props.push_back("R");
+        vector<string> props{"P", "Q", "R"};
+        vector<string> res;
 
         auto assignCount = countProp(expr, res);
         
-        for(unsigned i = 0; i!= props.size(); i++)
+        for(uint i = 0; i!= props.size(); i++)
         {
             EXPECT_EQ(props[i], res[i]) << "Vectors props and res differ at index " << i;
         }
@@ -106,11 +102,9 @@ namespace {
     
     // Tests that string replace performs correct.
     TEST_F(WFFAnalyzerTest, StrReplace) {
-        string str = "Hello world!";
-        string src = "Hello";
-        string dest = "Hi";
-        stringReplace(str, src, dest);
-        ASSERT_EQ("Hi world!", str);
+        string str = "HeHelloHelloHellHelloHe";
+        stringReplace(str, "Hello", "Hi");
+        ASSERT_EQ("HeHiHiHellHiHe", str);
     }
     
     // Tests that substitution propositions works correct.
@@ -123,8 +117,8 @@ namespace {
     
     TEST_F(WFFAnalyzerTest, EmptyDNF) {
         vector<string> props({"P", "Q", "R"});
-        vector<bool> res({false, false, false, false,
-                          false, false, false, false});
+        vector<bool> res{false, false, false, false,
+                          false, false, false, false};
 
         string dnf, cnf;
         tie(dnf, cnf) = computeNF(props, res);
@@ -134,11 +128,8 @@ namespace {
     }
 
     TEST_F(WFFAnalyzerTest, EmptyCNF) {
-        vector<string> props({"P", "Q"});
-        vector<bool> res({true, true, true, true});
-
         string dnf, cnf;
-        tie(dnf, cnf) = computeNF(props, res);
+        tie(dnf, cnf) = computeNF({"P", "Q"}, {true, true, true, true});
         ASSERT_EQ("(!P&&!Q)||(P&&!Q)||(!P&&Q)||(P&&Q)", dnf);
         ASSERT_EQ("", cnf);
     }
@@ -153,7 +144,7 @@ namespace {
                         << "Wrong assignment for variable " << j
                         << " at assignment No. " << i;
             }
-            pi = bitset<MAX_PROP_VARIABLE>(pi.to_ullong() + 1);
+            pi = {pi.to_ullong() + 1};
         }
     }
 }  // namespace

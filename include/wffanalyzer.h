@@ -48,7 +48,7 @@ string cal(string prop1);
 /**
  * Split a string into vector, seperated by oeprators
  */
-vector<string> strSplit(string _src);
+vector<string> tokenize(const string &src);
 
 /**
  * Do calculation on the exp.
@@ -60,7 +60,7 @@ bool stackBasedCal(string exp);
  * Count the proposition number in a given expression,
  * returns maximum configuration number.
  */
-uint64_t countProp(string exp,vector<string>& props);
+uint64_t countProp(const string &expr, vector<string>& props);
 
 /**
  * Replace a part of string
