@@ -143,10 +143,11 @@ bool stackBasedCal(string exp)
 // find all propositions and return maximum configuration number
 uint64_t countProp(const string &expr, vector<string>& props)
 {
-    // TODO: use tokenize to better handle this
-    for (auto i=expr.begin();i!=expr.end();++i)
-        if (isalpha(*i))
-            props.push_back(expr.substr(i-expr.begin(),1));
+    props.clear();
+    for (auto token : tokenize(expr)) {
+        if (operToIndex(token) == -1)
+            props.push_back(token);
+    }
 
     sort(props.begin(), props.end());
     // Exclude duplicate elements.
