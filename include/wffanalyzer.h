@@ -54,23 +54,23 @@ vector<string> tokenize(const string &src);
  * Do calculation on the exp.
  * return the result
  */
-bool stackBasedCal(string exp);
+bool stackBasedCal(const vector<string> &exp);
 
 /**
  * Count the proposition number in a given expression,
  * returns maximum configuration number.
  */
-uint64_t countProp(const string &expr, vector<string>& props);
+uint64_t countProp(const vector<string> &tokens, vector<string>& props);
 
 /**
- * Replace a part of string
+ * Replace part of a token stream
  */
-void stringReplace(string &strBase, const string &strSrc, const string &strDes);
+void tokenReplace(vector<string> &strBase, const string &strSrc, const string &strDes);
 
 /**
  * Substitude the propositions according to pi.
  */
-string performP(string exp, const vector<string>& props, uint64_t configuration);
+vector<string> performP(const vector<string> &tokens, const vector<string>& props, uint64_t configuration);
 
 /**
  * @brief assignment for variable at position, in configuration

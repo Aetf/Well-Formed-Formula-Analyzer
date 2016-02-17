@@ -74,10 +74,11 @@ vector<string> tokenize(const string &src)
     return tokens;
 }
 
-bool stackBasedCal(string exp)
+bool stackBasedCal(const vector<string> &exp)
 {
-    // Split the exp into divided variable and operators.
-    auto tokens = tokenize(exp);
+    // add a # to mark the end as required by stackBasedCal
+    auto tokens = exp;
+    tokens.push_back("#");
 
     // Create operator stack and variable stack.
     stack<string> optr, opnd;
@@ -141,10 +142,10 @@ bool stackBasedCal(string exp)
 }
 
 // find all propositions and return maximum configuration number
-uint64_t countProp(const string &expr, vector<string>& props)
+uint64_t countProp(const vector<string> &tokens, vector<string>& props)
 {
     props.clear();
-    for (auto token : tokenize(expr)) {
+    for (auto token : tokens) {
         if (operToIndex(token) == -1)
             props.push_back(token);
     }
@@ -161,25 +162,21 @@ uint64_t countProp(const string &expr, vector<string>& props)
     return 2ul << (props.size()-1);
 }
 
-void stringReplace(string &strBase, const string &strSrc, const string &strDes) // As the name shows.
+void tokenReplace(vector<string> &strBase, const string &strSrc, const string &strDes)
 {
-    auto srcLen = strSrc.size();
-    auto desLen = strDes.size();
-    auto pos = strBase.find(strSrc, 0);
-
-    while (pos != string::npos)
-    {
-        strBase.replace(pos, srcLen, strDes);
-        pos = strBase.find(strSrc, (pos+desLen));
+    for (auto &token : strBase) {
+        if (token == strSrc)
+            token = strDes;
     }
 }
 
-string performP(string exp, const vector<string>& props, uint64_t configuration)
+vector<string> performP(const vector<string> &tokens, const vector<string>& props, uint64_t configuration)
 {
+    auto res = tokens;
     for(uint i = 0; i != props.size(); i++)
-        stringReplace(exp, props.at(i),
+        tokenReplace(res, props.at(i),
                       assignmentAt(configuration, i) ? "T" : "F");
-    return exp;
+    return res;
 }
 
 bool assignmentAt(uint64_t configuration, uint varPosition)
@@ -189,8 +186,10 @@ bool assignmentAt(uint64_t configuration, uint varPosition)
 
 bool analyzeExpression(const string &expr, vector<string> &props, vector<bool> &results)
 {
+    // first tokenize
+    auto tokens = tokenize(expr);
     // find all proposition variables
-    auto maxConf = countProp(expr, props);
+    auto maxConf = countProp(tokens, props);
 
     // save the result of WFF.
     results.clear();
@@ -200,8 +199,7 @@ bool analyzeExpression(const string &expr, vector<string> &props, vector<bool> &
     try {
         // loop through all possible configurations
         for(uint64_t conf = 0; conf != maxConf; conf++) {
-            // add a # to mark the end as required by stackBasedCal
-            results.push_back(stackBasedCal(performP(expr, props, conf) + "#"));
+            results.push_back(stackBasedCal(performP(tokens, props, conf)));
         }
     } catch (int) {
         return false;

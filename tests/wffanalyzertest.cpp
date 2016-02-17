@@ -80,17 +80,19 @@ namespace {
     
     // Tests that stack based calculation correct.
     TEST_F(WFFAnalyzerTest, StackBasedCal) {
-        const string expr = "((F||T)&&T)->F#";
-        ASSERT_FALSE(stackBasedCal(expr)) << "Wrong result on expr " << expr;
+        const vector<string> tokens{"(", "(", "F", "||", "T", ")",
+                                    "&&", "T", ")", "->", "F"};
+        ASSERT_FALSE(stackBasedCal(tokens)) << "Wrong result on expr " << join(tokens, "");
     }
     
     // Tests that propositions in expr can be count correct.
     TEST_F(WFFAnalyzerTest, CountPropInExpr) {
-        const string expr = "((P||Q)&&R)->P";
+        const vector<string> tokens{"(", "(", "P", "||", "Q", ")",
+                                    "&&", "R", ")", "->", "P"};
         vector<string> props{"P", "Q", "R"};
         vector<string> res;
 
-        auto assignCount = countProp(expr, res);
+        auto assignCount = countProp(tokens, res);
         
         for(uint i = 0; i!= props.size(); i++)
         {
@@ -100,19 +102,19 @@ namespace {
         ASSERT_EQ(8u, assignCount) << "countProp returns wrong number of assignments";
     }
     
-    // Tests that string replace performs correct.
-    TEST_F(WFFAnalyzerTest, StrReplace) {
-        string str = "HeHelloHelloHellHelloHe";
-        stringReplace(str, "Hello", "Hi");
-        ASSERT_EQ("HeHiHiHellHiHe", str);
+    // Tests that token replace performs correct.
+    TEST_F(WFFAnalyzerTest, TokenReplace) {
+        vector<string> tokens{"He", "Hello", "Hello", "Hell", "Hello", "He"};
+        tokenReplace(tokens, "Hello", "Hi");
+        ASSERT_EQ("HeHiHiHellHiHe", join(tokens, ""));
     }
     
     // Tests that substitution propositions works correct.
     TEST_F(WFFAnalyzerTest, PerformProp) {
-        ASSERT_EQ("((F||T)&&T)->F",
-                  performP("((P||Q)&&R)->P",
-                           {"P", "Q", "R"},
-                           0b110));
+        const vector<string> tokens{"(", "(", "P", "||", "Q", ")",
+                                    "&&", "R", ")", "->", "P"};
+        auto res = performP(tokens, {"P", "Q", "R"}, 0b110);
+        ASSERT_EQ("((F||T)&&T)->F", join(res, ""));
     }
     
     TEST_F(WFFAnalyzerTest, EmptyDNF) {
